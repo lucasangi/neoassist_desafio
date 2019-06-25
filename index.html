@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/jquery.json-viewer.css">
+    <title>Desafio NeoAssist</title>
+
+    <style>
+        .card-header span{
+            line-height: 2em;
+        }
+
+        pre {
+            background-color: ghostwhite;
+            border: 1px solid silver;
+            padding: 10px 20px;
+            margin: 20px; 
+            max-height: 50vh;
+            white-space:pre-wrap; 
+            word-wrap:break-word;
+        }
+
+        p.text-justify{
+            text-indent: 1em;
+        }
+
+        .card, .form-row{
+            margin-bottom: 1em;
+        }
+
+        .btn{
+            margin: 0 0.5em;
+        }
+    </style>
+  </head>
+  <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1 class="display-1">NeoAssist</h1>
+                    <p class="lead">
+                        Case de Aplicação Técnica: API e Classificador de Tickets.
+                    </p>
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <span>Classificador</span>
+                            <a id="btnClassifier" class="btn btn-sm btn-primary float-right">Recarregar</a>
+                        </div>
+                        <div class="card-body">
+                                <div class="card-text justify-content">
+                                    <p class="text-justify">
+                                        O serviço de classificação pode ser requisitado atráves da URL 
+                                        <span class="font-weight-bold"> /services/classifier.php</span>. 
+                                        Nesta rota o classificador percorre os ticktets salvos no arquivo
+                                        <span class="font-weight-bold"> /files/tickets.php</span>
+                                        e os classifica de acordo com o quantidade de palavras negativas encontradas nas interações
+                                        e na duração do ticket.
+                                    </p>
+                                    <p class="text-justify">
+                                        Após a predição os tickets devidamente classificados são armazenados no arquivo
+                                        <span class="font-weight-bold"> files/classified_tickets.json</span> e no banco de 
+                                        dados MongoDB que pode ser consultado através do serviço
+                                        <span class="font-weight-bold"> /services/api.php</span>.
+                                    </p>
+                                    <p class="text-justify">
+                                        Como resposta o serviço retorna um JSON com a acurácia do classificador em 
+                                        conjunto com os tickets classificados (o atributo <span class="font-weight-bold"> priority</span> 
+                                        apresenta a classe atribuida através de análise manual, ao passo que o atributo 
+                                        <span class="font-weight-bold"> suggested_priority </span> representa a classe atribuida pelo classificador
+                                        ), conforme pode-se observar abaixo:
+                                    </p>
+                                </div>
+                                <pre id="classificador"></pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <span>API</span>
+                            <a id="btnApi" class="btn btn-sm btn-primary float-right">Buscar</a>
+                        </div>
+                        <div class="card-body">
+                            <form>
+                                <h5> Filtros </h5>
+                                <div class="form-row">
+                                    <div class="col-sm-4">
+                                        <label>Data Início</label>
+                                        <input class="form-control" id="start" type="date" id="example-date-input">
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label>Data Fim</label>
+                                        <input class="form-control" id="end" type="date" id="example-date-input">
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label>Prioridade</label>
+                                        <select id="priority" class="custom-select">
+                                            <option value="" selected>Não Filtrar</option>
+                                            <option value="Normal">Normal</option>
+                                            <option value="Alta">Alta</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-sm-6">
+                                        <h5>Ordernação</h5>
+                                        <div class="row">
+                                            <div class="col-sm-8">
+                                                <label>Campo</label>
+                                                <select id="orderBy" class="custom-select">
+                                                    <option value="DateCreate" selected>Data de Criação</option>
+                                                    <option value="DateUpdate">Data de Atualização</option>
+                                                    <option value="priority">Prioridade</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label>Modo</label>
+                                                <select id="orderMode" class="custom-select">
+                                                    <option value="ASC" selected>Crescente</option>
+                                                    <option value="DESC">Decrescente</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <h5>Paginação</h5>
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label>Qtd. p/ Página</label>
+                                                <input type="number" class="form-control" id="qtdPag" value="10">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label>Página Atual</label>
+                                                <input type="number" class="form-control" id="currentPag" value="1">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <pre id="api"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <script src="assets/js/jquery.min.js" ></script>
+    <script src="assets/js/popper.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.json-viewer.js"></script>
+
+
+    <script>
+        $(document).ready( function(){
+
+            $.loadClassifierJson = function( ){
+                $.getJSON( "services/classifier.php", function( classificationInfo ){
+                    $('#classificador').jsonViewer(classificationInfo);
+                    $.loadAPIJson();
+                });
+            }
+
+            $("#btnClassifier").click( (evt) => {
+                evt.preventDefault();
+                $.loadClassifierJson();
+            });
+
+            $.loadAPIJson = function(){
+
+                let orderBy = {
+                    field : $("#orderBy").val(),
+                    mode  : $("#orderMode").val()
+                };
+
+                let filter = {
+                    "start"   : $("#start").val(),
+                    "end"     : $("#end").val(),
+                    "priority": $("#priority").val()
+                }
+                
+                let pagination = {
+                    "qtd" : $("#qtdPag").val(),
+                    "page": $("#currentPag").val()
+                };
+
+                $.getJSON( "/services/api.php", { 
+                    "filter"    : JSON.stringify( filter ),
+                    "orderBy"   : JSON.stringify( orderBy ),
+                    "pagination": JSON.stringify( pagination )
+                 }, function( tickets ){
+                    $('#api').jsonViewer(tickets);
+                });
+            }
+
+            $("#btnApi").click( (evt) => {
+                evt.preventDefault();
+                $.loadAPIJson();
+            });
+
+            $.loadClassifierJson();
+        });
+    </script>
+  </body>
+</html>

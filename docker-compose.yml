@@ -1,0 +1,19 @@
+version: '3'
+services:
+  php:
+    container_name: php
+    build: .
+    ports:
+      - 80:80
+    volumes:
+      - .:/var/www/html
+    links:
+      - mongo
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: neoassist
+      MONGO_INITDB_ROOT_PASSWORD: tickets
