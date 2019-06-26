@@ -1,8 +1,8 @@
 # Desafio desenvolvedor backend
 
-Precisamos melhorar o atendimento no Brasil, para alcançar esse resultado, precisamos de um algoritmo que classifique
+Precisamos melhorar o atendimento no Brasil, para alcançar esse resultado, faz-se necessário um algoritmo que classifique
 nossos tickets (disponível em tickets.json) por uma ordem de prioridade, um bom parâmetro para essa ordenação é identificar o humor do consumidor.
-Pensando nisso, queremos classificar nossos tickets com as seguintes prioridade: Normal e Alta.
+Pensando nisso, queremos classificar nossos tickets com as seguintes prioridades: Normal e Alta.
 
 ### São exemplos:
 
@@ -12,7 +12,7 @@ Pensando nisso, queremos classificar nossos tickets com as seguintes prioridade:
 - Consumidor sugere abrir reclamação como exemplo Procon ou ReclameAqui
     
 ### Prioridade Normal
-- Primeira iteração do consumidor
+- Primeira interação do consumidor
 - Consumidor não demostra irritação
 
 Considere uma classificação com uma assertividade de no mínimo 70%, e guarde no documento (Nosso json) a prioridade e sua pontuação.
@@ -41,7 +41,7 @@ Para executar a aplicação é necessário ter o [Docker](https://www.docker.com
 Caso o seu sistema seja um linux é recomendado a execução desses [comandos](https://docs.docker.com/install/linux/linux-postinstall/), a fim de que você possa executar comandos do docker sem a instrução __*sudo*__.
 
 ### Verificar Instalação das Ferramentas
-Para verificar a o sucesso da instalação das ferramentas necessárias execute os seguintes comandos:
+Para verificar o sucesso da instalação das ferramentas necessárias execute os seguintes comandos:
 ```
 > docker --version
 > docker-compose --version
@@ -103,10 +103,10 @@ A prioridade dos _tickets_ foi definida manualmente com base nas informações e
 O classificador implementado utiliza de dois pesos para realizar a predição: 
 - Quantidade de palavras negativas encontradas nas interações;
 - A porcentagem de tempo excedido em comparação ao tempo médio de um _ticket_ (36,8 dias).
-> As palavras consideradas como negativas foram extraídas dos tickets após uma leitura manual. Pode-se visualizar as palavras na classe **system/Classifier.class.php**
+> As palavras consideradas como negativas foram extraídas dos tickets após uma leitura manual. Pode-se visualizar as palavras na classe **system/Classifier.class.php**.
 
-Nesse contexto o classificador realiza a seguintes verificação:
-- Se o texto tiver **mais de 3 palavras negativas** ou  o **tempo excedido for maior ou igual a 11%** o ticket é classificado como prioridade **Alta**, caso contrário, o será classificado como prioridade **Normal**.
+Nesse contexto o classificador realiza a seguinte verificação:
+- Se o texto tiver **mais de 3 palavras negativas** ou  o **tempo excedido for maior ou igual a 11%** o ticket é classificado como prioridade **Alta**, caso contrário, o mesmo o será classificado como prioridade **Normal**.
 > Durante o processo de classificação as informações utilizadas são armazenadas no atributo **classification** e a classe sugerida pelo classificador é representada pelo atributo **suggested_priority**.
 
 Os _tickets_ classificados são salvos no arquivo **/files/classified_tickets.json** e no banco de documentos **MongoDB** para que possam ser consultados por intermédio da _API_.

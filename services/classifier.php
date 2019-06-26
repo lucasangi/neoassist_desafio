@@ -7,35 +7,35 @@ $classifier = new System\Classifier();
 
 $mongo = new System\Mongo();
 
-$tickets = json_decode( file_get_contents('../files/tickets.json'), true );
+$tickets = json_decode(file_get_contents('../files/tickets.json'), true);
 
-$classifier->classify( $tickets );
+$classifier->classify($tickets);
 
-$mongo->dropCollection( 'tickets' );
+$mongo->dropCollection('tickets');
 
-$mongo->insert( 'tickets', $tickets, true );
+$mongo->insert('tickets', $tickets, true);
 
-file_put_contents("../files/classified_tickets.json", json_encode( $tickets ) );
+file_put_contents("../files/classified_tickets.json", json_encode($tickets));
 
-$total   = count( $tickets );
+$total = count($tickets);
 $correct = array();
-$wrong   = array();  
+$wrong = array();
 
 foreach ($tickets as $index => $ticket) {
-    if( $ticket['priority'] == $ticket['suggested_priority'] ){
+    if ($ticket['priority'] == $ticket['suggested_priority']) {
         $correct[] = $ticket;
-    }else{
+    } else {
         $wrong[] = $ticket;
     }
 }
 
-$accuracy = round( count($correct)/$total*100, 2)."%";
+$accuracy = (count($correct) / $total * 100) . "%";
 
-$response = array( 
-    "accuracy"       => $accuracy,
-    "summary"        => ["total" => $total, "correct" => count($correct), "wrong" => count($wrong)],
+$response = array(
+    "accuracy" => $accuracy,
+    "summary" => ["total" => $total, "correct" => count($correct), "wrong" => count($wrong)],
     "corret_tickets" => $correct,
-    "wrong_tickets"  => $wrong
-) ;
+    "wrong_tickets" => $wrong
+);
 
-response( $response );       
+response($response);
