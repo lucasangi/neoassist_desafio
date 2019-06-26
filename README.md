@@ -82,12 +82,24 @@ Para executar o ambiente da aplicação é necessário ir até a pasta do projet
 ```
 Esse comando irá realizar o _build_ do ambiente da aplicação que consiste em um _conteiner_ com [Apache](https://www.apache.org/) + [PHP 7.2.6](https://www.php.net/)  em conjunto com outro _container_ com o banco de dados orientado a documentos [MongoDB](https://www.mongodb.com/).
 
-A instrução estará concluída quando algumas mensagens de _log_ aparecerem no seu console, conforme pode-se observar abaixo:
+Após a execução do comando, uma instrução em _background_ será executada que realizará o download das dependências do projeto via [_composer_](https://getcomposer.org/). Para verificar o progresso dessa instrução utilize o comando:
 ```
-mongo    | 2019-06-25T12:32:21.071+0000 I NETWORK  [initandlisten] waiting for connections on port 27017
-php      | [Tue Jun 25 12:32:20.732446 2019] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.25 (Debian) PHP/7.2.6 configured -- resuming normal operations
+> docker logs php
 ```
-Essas mensagens de _log_ são emitidas pelos _containers_ durante seu funcionamento. Isso indica que eles já foram construídos e estão funcionando :)
+
+O _output_ do comando deve ser semlhante à saída abaixo:
+```
+Do not run Composer as root/super user! See https://getcomposer.org/root for details
+Loading composer repositories with package information
+Installing dependencies (including require-dev) from lock file
+Package operations: 1 install, 0 updates, 0 removals
+  - Installing mongodb/mongodb (1.4.2): Downloading (100%)
+Generating autoload files
+Do not run Composer as root/super user! See https://getcomposer.org/root for details
+Generated optimized autoload files containing 77 classes
+```
+
+Caso a saída seja semelhante, ótimo! Os _containers_ já foram construídos e as dependências já foram adicionadas ao projeto :)
 
 ### Aplicação
 Após a construção do ambiente da aplicação, basta acessar http://localhost:80 para visualizar o painel principal da aplicação. 
@@ -151,4 +163,15 @@ Os _tickets_ classificados são salvos no arquivo **/files/classified_tickets.js
    {} ... {}
   ]
 }
+```
+
+### Possíveis Problemas
+Caso encontre algum erro durante a execução de um dos serviços (classifier ou api), o [_composer_](https://getcomposer.org/) pode ter encontrado algum problema durante a gestão de dependências do projeto. Para solucionar possíveis erros execute os seguintes comandos:
+```
+> docker exec -it php bash
+```
+O comando irá exibir o console do _container **php**_, dentro do terminal execute os comandos:
+```
+composer update
+composer dump-autoload -o 
 ```
